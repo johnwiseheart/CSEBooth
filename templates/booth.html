@@ -113,7 +113,7 @@ input.hide, .button.hide, .hide {
     });
 
     $( "#save_photo" ).click(function() {
-      $.post( "/save_photo/" + photo_name, { caption: $('#caption').val()})
+      $.post( "/save_photo/" + photo_name, { caption: $('#caption').val(), email: $('#email').val() })
         .done(function( data ) {
           $('#retake_photo').fadeOut();
           $('#save_photo').fadeOut();
