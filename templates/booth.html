@@ -62,6 +62,7 @@
         It's time to take a photo!
       </div>
       <div id="timer"></div>
+      <div id="countdown_pane"></div>
       <input type="text" id="caption" maxlength="40" class="hide" placeholder="Caption your photo? (40 characters)">
       <input type="text" id="email" class="hide" placeholder="Your email address...">
 
@@ -94,22 +95,8 @@ $(function() {
       $(this).fadeOut();
       $('#photo_pane').fadeOut();
       $('#photo_booth_header').fadeOut();
-      setTimeout(countdown, 450)
-
-    });
-
-    $( "#retake_photo" ).click(function() {
-      $('#photo_pane').fadeOut();
-      $('#retake_photo').fadeOut();
-      $('#save_photo').fadeOut();
-      $('#caption').fadeOut();
-      $('#email').fadeOut();
-      setTimeout(countdown, 450);
-      
-    });
-
-    function countdown() {
-      $('#timer').pietimer({
+      setTimeout(function() {
+        $('#timer').pietimer({
           timerSeconds: 3,
           color: '#234',
           fill: false,
@@ -122,6 +109,26 @@ $(function() {
               });
           }
       });
+      }, 450)
+
+    });
+
+    $( "#retake_photo" ).click(function() {
+      $('#photo_pane').fadeOut();
+      $('#retake_photo').fadeOut();
+      $('#save_photo').fadeOut();
+      $('#caption').fadeOut();
+      $('#email').fadeOut();
+      $('#timer').pietimer('reset');
+      setTimeout(countdown, 450);
+      
+    });
+
+    function countdown() {
+      $("#timer").show();
+      $('#timer').pietimer('start');
+
+     
 
 
         
