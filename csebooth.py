@@ -21,7 +21,7 @@ def mail(to, subject, attach):
    msg['From'] = gmail_user
    msg['To'] = to
    msg['Subject'] = subject
-   msg.preamble = "Your photos from CSE Open Day"
+   msg.preamble = subject
 
    msg.attach(MIMEImage(open(attach, 'rb').read()))
    mailServer = smtplib.SMTP("smtp.gmail.com", 587)
@@ -50,15 +50,20 @@ def take_photo():
         '--force-overwrite'
     ], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, err = p.communicate()
-    print(p.returncode)  
+    print(p.returncode)
     if p.returncode == 0 and os.path.isfile('capt0000.jpg'):
 
         timestamp = calendar.timegm(time.gmtime())
         os.rename('capt0000.jpg', 'pictures/%s.jpg' % timestamp)
 
-        with Image(filename='pictures/%s.jpg' % timestamp) as img:
-          img.resize(int(img.width/10), int(img.height/10))
-          img.save(filename='thumb/%s.jpg' % timestamp)
+        proc = subprocess.Popen([
+            'epeg',
+            '--width=10%',
+            '--height=10%',
+            'pictures/%s.jpg' % timestamp,
+            'thumb/%s.jpg' % timestamp
+        ], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        _, _ = proc.communicate()
 
         return jsonify({
             "success": True,
@@ -92,7 +97,7 @@ def save_photo(name):
             img.save(filename='generated/' + name)
    if email:
       thr = threading.Thread(target=mail, args=(email,
-         "Your photo from CSE Open Day",
+         "Your photo from CSE @ UNSW Open Day",
          "generated/" + name), kwargs={})
       thr.start() # will run "foo"
    return "Success"
