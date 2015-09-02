@@ -12,7 +12,6 @@ import subprocess
 import calendar
 import time
 
-
 gmail_user = "cseopenday@gmail.com"
 gmail_pwd = "bradhall"
 
@@ -52,11 +51,10 @@ def take_photo():
     ], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, err = p.communicate()
     print(p.returncode)  
-    if p.returncode == 0:
+    if p.returncode == 0 and os.path.isfile('capt0000.jpg'):
 
         timestamp = calendar.timegm(time.gmtime())
         os.rename('capt0000.jpg', 'pictures/%s.jpg' % timestamp)
-        time.sleep(2)
 
         with Image(filename='pictures/%s.jpg' % timestamp) as img:
           img.resize(int(img.width/10), int(img.height/10))
@@ -67,6 +65,8 @@ def take_photo():
             "name": "%s.jpg" % timestamp
         })
     else:
+        if not os.path.isfile('capt0000.jpg'):
+            err = ' *** Capture not found *** '
         return jsonify({
             "success": False,
             "error": str(err).split('***')[1]
@@ -83,7 +83,7 @@ def save_photo(name):
             if caption:
                with Drawing() as draw:
                   draw.font = 'font.otf'
-                  draw.font_size = 300
+                  draw.font_size = 250
                   draw.stroke_color = Color('#000')
                   draw.fill_color = Color('#fff')
                   draw.text_alignment = "center"
