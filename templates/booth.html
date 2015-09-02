@@ -94,7 +94,8 @@ $(function() {
       $(this).fadeOut();
       $('#photo_pane').fadeOut();
       $('#photo_booth_header').fadeOut();
-      countdown();
+      setTimeout(countdown, 450)
+
     });
 
     $( "#retake_photo" ).click(function() {
@@ -103,7 +104,8 @@ $(function() {
       $('#save_photo').fadeOut();
       $('#caption').fadeOut();
       $('#email').fadeOut();
-      countdown();
+      setTimeout(countdown, 450);
+      
     });
 
     function countdown() {
