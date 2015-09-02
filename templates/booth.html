@@ -54,7 +54,7 @@ input.hide, .button.hide, .hide {
       <div class="panel" id="photo_pane">
         It's time to take a photo!
       </div>
-      <input type="text" id="caption" class="hide" placeholder="Caption your photo?">
+      <input type="text" id="caption" class="hide" maxlength="30" placeholder="Caption your photo? (30 characters)">
       <input type="text" id="email" class="hide" placeholder="Your email address...">
 
       <a href="#" id="take_photo" class="button large">Take Photo</a><br />
@@ -77,39 +77,68 @@ input.hide, .button.hide, .hide {
       $('#save_photo').fadeOut();
       $('#caption').fadeOut();
       $('#email').fadeOut();
-      $('#photo_pane').html("<h1>3... 2... 1... Cheese!");
+      var timer = setInterval(function() { handleTimer(); }, 1000);
       // 3, 2, 1, then go to the thing
-      $.get( "/take_photo", function( data ) {
-        var img = $('<img />', {
-          "src": "/pictures/" + data.name
+      function endCountdown() {
+      // logic to finish the countdown here
+        $('#photo_pane').html("<h1>Say Cheese!</h1>");
+        $.get( "/take_photo", function( data ) {
+          var img = $('<img />', {
+            "src": "/pictures/" + data.name
+          });
+          photo_name = data.name;
+          $('#photo_pane').html(img);
+          $('#retake_photo').fadeIn();
+          $('#save_photo').fadeIn();
+          $('#caption').fadeIn();
+          $('#email').fadeIn();
         });
-        photo_name = data.name;
-        $('#photo_pane').html(img);
-        $('#retake_photo').fadeIn();
-        $('#save_photo').fadeIn();
-        $('#caption').fadeIn();
-        $('#email').fadeIn();
-      });
+    }
+    var count = 3;
+    function handleTimer() {
+      if(count === 0) {
+        clearInterval(timer);
+        endCountdown();
+      } else {
+        $('#photo_pane').html("<h1>"+ count + "...</h1>");
+        count--;
+      }
+    }
     });
+
 
 
 
     $( "#take_photo" ).click(function() {
       $(this).fadeOut();
       $('#photo_booth_header').fadeOut();
-      $('#photo_pane').html("<h1>3... 2... 1... Cheese!");
+      var timer = setInterval(function() { handleTimer(); }, 1000);
       // 3, 2, 1, then go to the thing
-      $.get( "/take_photo", function( data ) {
-        var img = $('<img />', {
-          "src": "/pictures/" + data.name
+      function endCountdown() {
+      // logic to finish the countdown here
+        $('#photo_pane').html("<h1>Say Cheese!</h1>");
+        $.get( "/take_photo", function( data ) {
+          var img = $('<img />', {
+            "src": "/pictures/" + data.name
+          });
+          photo_name = data.name;
+          $('#photo_pane').html(img);
+          $('#retake_photo').fadeIn();
+          $('#save_photo').fadeIn();
+          $('#caption').fadeIn();
+          $('#email').fadeIn();
         });
-        photo_name = data.name;
-        $('#photo_pane').html(img);
-        $('#retake_photo').fadeIn();
-        $('#save_photo').fadeIn();
-        $('#caption').fadeIn();
-        $('#email').fadeIn();
-      });
+    }
+    var count = 3;
+    function handleTimer() {
+      if(count === 0) {
+        clearInterval(timer);
+        endCountdown();
+      } else {
+        $('#photo_pane').html("<h1>"+ count + "...</h1>");
+        count--;
+      }
+    }
     });
 
     $( "#save_photo" ).click(function() {

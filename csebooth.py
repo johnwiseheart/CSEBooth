@@ -58,7 +58,7 @@ def save_photo(name):
             if caption:
                with Drawing() as draw:
                   draw.font = 'font.otf'
-                  draw.font_size = 400
+                  draw.font_size = 300
                   draw.stroke_color = Color('#000')
                   draw.fill_color = Color('#fff')
                   draw.text_alignment = "center"
@@ -66,7 +66,7 @@ def save_photo(name):
                   draw(img)
             img.save(filename='generated/' + name)
    if email:
-      thr = threading.Thread(target=mail, args=("johnwiseheart@gmail.com",
+      thr = threading.Thread(target=mail, args=(email,
          "Your photo from CSE Open Day",
          "generated/" + name), kwargs={})
       thr.start() # will run "foo"
