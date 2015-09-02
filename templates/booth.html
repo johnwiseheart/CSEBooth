@@ -11,6 +11,7 @@
   <!-- If you are using the CSS version, only link these 2 files, you may add app.css to use for your overrides if you like -->
   <link rel="stylesheet" href="{{url_for('static', filename='css/normalize.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/foundation.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/pietimer.css')}}">
 
   <script src="{{url_for('static', filename='js/vendor/modernizr.js')}}"></script>
   <style>
@@ -47,108 +48,6 @@
       font-size: 100px;
 
     }
-
-.timer {
-
-                position:relative;
-
-                font-size: 200px;
-
-                width:1em;
-
-                height:1em;
-
-                float: left;
-
-            }
-
-            .timer > .percent {
-
-                position: absolute;
-
-                top: 1.05em;
-
-                left: 0;
-
-                width: 3.33em;
-
-                font-size: 0.3em;
-
-                text-align:center;
-
-            }
-
-            .timer > #slice {
-
-                position:absolute;
-
-                width:1em;
-
-                height:1em;
-
-                clip:rect(0px,1em,1em,0.5em);
-
-            }
-
-            .timer > #slice.gt50 {
-
-                clip:rect(auto, auto, auto, auto);
-
-            }
-
-            .timer > #slice > .pie {
-
-                border: 0.1em solid #c0c0c0;
-
-                position:absolute;
-
-                width:0.8em; /* 1 - (2 * border width) */
-
-                height:0.8em; /* 1 - (2 * border width) */
-
-                clip:rect(0em,0.5em,1em,0em);
-
-                -moz-border-radius:0.5em;
-
-                -webkit-border-radius:0.5em; 
-
-                border-radius:0.5em; 
-
-            }
-
-            .timer > #slice > .pie.fill {
-
-                -moz-transform:rotate(180deg) !important;
-
-                -webkit-transform:rotate(180deg) !important;
-
-                -o-transform:rotate(180deg) !important;
-
-                transform:rotate(180deg) !important;
-
-            }
-
-            .timer.fill > .percent {
-
-                display: none;
-
-            }
-
-            .timer.fill > #slice > .pie {
-
-                border: transparent;
-
-                background-color: #c0c0c0;
-
-                width:1em;
-
-                height:1em;
-
-            }
-
-
-
-
   </style>
 
 </head>
@@ -156,13 +55,13 @@
 
   <img src="{{url_for('static', filename='img/cse.png')}}" class="cse_img">
   <div class="row valign-middle">
+    
     <div class="small-9 columns valign-middle text-center">
       <h1 id="photo_booth_header">CSE Photo Booth</h1>
-      <div class="timer">
       <div class="panel" id="photo_pane">
         It's time to take a photo!
       </div>
-      <div id="countdown_pane"></div>
+      <div id="timer"></div>
       <input type="text" id="caption" maxlength="40" class="hide" placeholder="Caption your photo? (40 characters)">
       <input type="text" id="email" class="hide" placeholder="Your email address...">
 
@@ -176,70 +75,20 @@
 
 
   <script src="{{url_for('static', filename='js/vendor/jquery.js')}}"></script>
+  <script src="{{url_for('static', filename='js/jquery.pietimer.js')}}"></script>
   <script src="{{url_for('static', filename='js/foundation.min.js')}}"></script>
   <script>
 
 
 
+$(function() {
+      
+    });
+
+
 
     $(document).foundation();
     var photo_name;
-
-
-            var timer;
-
-            var timerCurrent;
-            var timerFinish;
-            var timerSeconds;
-            function drawTimer(percent){
-                $('div.timer').html('<div class="percent"></div><div id="slice"'+(percent > 50?' class="gt50"':'')+'><div class="pie"></div>'+(percent > 50?'<div class="pie fill"></div>':'')+'</div>');
-
-                var deg = 360/100*percent;
-                $('#slice .pie').css({
-                    '-moz-transform':'rotate('+deg+'deg)',
-                    '-webkit-transform':'rotate('+deg+'deg)',
-                    '-o-transform':'rotate('+deg+'deg)',
-                    'transform':'rotate('+deg+'deg)'
-                });
-                $('.percent').html(Math.round(percent)+'%');
-            }
-
-            function stopWatch(){
-                var seconds = (timerFinish-(new Date().getTime()))/1000;
-                if(seconds <= 0){
-                    drawTimer(100);
-                    clearInterval(timer);
-                    $('input[type=button]#watch').val('Start');
-                    alert('Finished counting down from '+timerSeconds);
-                } else {
-                    var percent = 100-((seconds/timerSeconds)*100);
-                    drawTimer(percent);
-                }
-
-            }
-
-            $(document).ready(function(){
-                $('input[type=button]#watch').click(function(e){
-                    e.preventDefault();
-                    if($('input[type=button]#watch').val() == 'Start'){
-                        $('input[type=button]#watch').val('Stop');
-                        timerSeconds = 3;
-                        timerCurrent = 0;
-                        timerFinish = new Date().getTime()+(timerSeconds*1000);
-                        timer = setInterval('stopWatch()',50);
-                    } else {
-                        $('input[type=button]#watch').val('Start');
-                        clearInterval(timer);
-                    }
-                });
-                $('input[type=button]#watch').click();
-            });
-
-
-
-
-
-
 
     $( "#take_photo" ).click(function() {
       $(this).fadeOut();
@@ -258,25 +107,22 @@
     });
 
     function countdown() {
-      var timer = setInterval(function() { handleTimer(); }, 1000);
+      $('#timer').pietimer({
+          timerSeconds: 3,
+          color: '#234',
+          fill: false,
+          showPercentage: true,
+          callback: function() {
+              $('#timer').hide();
+              $('#countdown_pane').html('Say Cheese!');
+              $.get( "/take_photo", function( data ) {
+                takePhoto(data);
+              });
+          }
+      });
 
-      function endCountdown() {
-        $('#countdown_pane').html('Say Cheese!');
-        $.get( "/take_photo", function( data ) {
-          takePhoto(data);
-        });
-      }
 
-      var count = 3;
-      function handleTimer() {
-        if(count === 0) {
-          clearInterval(timer);
-          endCountdown();
-        } else {
-          $('#countdown_pane').html(count);
-          count--;
-        }
-      }
+        
     }
 
 
