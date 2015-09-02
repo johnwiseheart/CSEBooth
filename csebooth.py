@@ -8,6 +8,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 import os
 import threading
+import subprocess
+import calendar
+import time
+
 
 gmail_user = "cseopenday@gmail.com"
 gmail_pwd = "bradhall"
@@ -41,11 +45,32 @@ def index():
 
 @app.route('/take_photo')
 def take_photo():
-    time.sleep(2)
-    return jsonify({
-        "success": True,
-        "name": "hello.jpg"
-    })
+    p = subprocess.Popen([
+        'gphoto2',
+        '--capture-image-and-download',
+        '--force-overwrite'
+    ], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, err = p.communicate()
+    print(p.returncode)  
+    if p.returncode == 0:
+
+        timestamp = calendar.timegm(time.gmtime())
+        os.rename('capt0000.jpg', 'pictures/%s.jpg' % timestamp)
+        time.sleep(2)
+
+        with Image(filename='pictures/%s.jpg' % timestamp) as img:
+          img.resize(int(img.width/10), int(img.height/10))
+          img.save(filename='thumb/%s.jpg' % timestamp)
+
+        return jsonify({
+            "success": True,
+            "name": "%s.jpg" % timestamp
+        })
+    else:
+        return jsonify({
+            "success": False,
+            "error": str(err).split('***')[1]
+        })
 
 @app.route('/save_photo/<name>', methods=['POST'])
 def save_photo(name):
@@ -74,7 +99,7 @@ def save_photo(name):
 
 @app.route('/pictures/<name>')
 def get_photo(name):
-    return send_file('pictures/' + name)
+    return send_file('thumb/' + name)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='192.168.0.9')
+    app.run(debug=True, host='0.0.0.0')

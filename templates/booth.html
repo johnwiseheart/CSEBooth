@@ -83,6 +83,11 @@ input.hide, .button.hide, .hide {
       // logic to finish the countdown here
         $('#photo_pane').html("<h1>Say Cheese!</h1>");
         $.get( "/take_photo", function( data ) {
+          if (!data.success) {
+            alert(data.error)
+            document.location.href='/'
+          }
+
           var img = $('<img />', {
             "src": "/pictures/" + data.name
           });
@@ -118,6 +123,10 @@ input.hide, .button.hide, .hide {
       // logic to finish the countdown here
         $('#photo_pane').html("<h1>Say Cheese!</h1>");
         $.get( "/take_photo", function( data ) {
+          if (!data.success) {
+            alert(data.error);
+            document.location.href = '/';
+          }
           var img = $('<img />', {
             "src": "/pictures/" + data.name
           });
