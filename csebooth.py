@@ -96,10 +96,12 @@ def save_photo(name):
                   draw(img)
             img.save(filename='generated/' + name)
    if email:
-      thr = threading.Thread(target=mail, args=(email,
-         "Your photo from CSE @ UNSW Open Day",
-         "generated/" + name), kwargs={})
-      thr.start() # will run "foo"
+      with open("images.txt", "a") as myfile:
+         myfile.write("%s %s" % (timestamp, email))
+      # thr = threading.Thread(target=mail, args=(email,
+      #    "Your photo from CSE @ UNSW Open Day",
+      #    "generated/" + name), kwargs={})
+      # thr.start() # will run "foo"
    return "Success"
 
 @app.route('/pictures/<name>')
