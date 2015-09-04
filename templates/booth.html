@@ -7,6 +7,7 @@
   <!-- If you delete this meta tag World War Z will become a reality -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <link rel="apple-touch-icon" href="/static/img/cse.png"/>
   <title>CSE Photo Booth</title>
 
   <!-- If you are using the CSS version, only link these 2 files, you may add app.css to use for your overrides if you like -->
@@ -101,7 +102,7 @@ $(function() {
     $(document).foundation();
     var photo_name;
 
-    $( "#take_photo" ).click(function() {
+    $( "#take_photo" ).on("touchstart", function() {
       $(this).fadeOut();
       $('#photo_pane').fadeOut();
       $('#photo_booth_header').fadeOut();
@@ -123,7 +124,7 @@ $(function() {
 
     });
 
-    $( "#retake_photo" ).click(function() {
+    $( "#retake_photo" ).on("touchstart", function() {
       $('#photo_pane').fadeOut();
       $('#retake_photo').fadeOut();
       $('#save_photo').fadeOut();
@@ -135,7 +136,7 @@ $(function() {
       
     });
 
-	$("#back_button").click(function() {
+	$("#back_button").on("touchstart", function() {
 		document.location.href = '/';
 	});
 
@@ -173,7 +174,7 @@ $(function() {
 
 
 
-    $( "#save_photo" ).click(function() {
+    $( "#save_photo" ).on("touchstart", function() {
       $.post("/save_photo/" + photo_name, {
         caption: $('#caption').val(), 
         email: $('#email').val()

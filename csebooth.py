@@ -44,6 +44,7 @@ def index():
 
 @app.route('/take_photo')
 def take_photo():
+    os.system("killall PTPCamera")
     p = subprocess.Popen([
         'gphoto2',
         '--capture-image-and-download',
@@ -71,7 +72,7 @@ def take_photo():
         })
     else:
         if not os.path.isfile('capt0000.jpg'):
-            err = ' *** Capture not found *** '
+            err = ' *** Capture not found; perhaps you were out of focus? *** '
         return jsonify({
             "success": False,
             "error": str(err).split('***')[1]
@@ -96,8 +97,8 @@ def save_photo(name):
                   draw(img)
             img.save(filename='generated/' + name)
    if email:
-      with open("images.txt", "a") as myfile:
-         myfile.write("%s %s" % (timestamp, email))
+      with open("images.csv", "a") as myfile:
+         myfile.write("%s,%s\n" % (name, email))
       # thr = threading.Thread(target=mail, args=(email,
       #    "Your photo from CSE @ UNSW Open Day",
       #    "generated/" + name), kwargs={})
