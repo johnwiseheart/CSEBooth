@@ -5,7 +5,8 @@
 <head>
   <meta charset="utf-8">
   <!-- If you delete this meta tag World War Z will become a reality -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
   <title>CSE Photo Booth</title>
 
   <!-- If you are using the CSS version, only link these 2 files, you may add app.css to use for your overrides if you like -->
@@ -48,10 +49,17 @@
       font-size: 100px;
 
     }
+
+	#back_button {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
   </style>
 
 </head>
 <body>
+  <a href="#" id="back_button" class="button hide">Back</a><br />
 
   <img src="{{url_for('static', filename='img/cse.png')}}" class="cse_img">
   <div class="row valign-middle">
@@ -64,7 +72,7 @@
       <div id="timer"></div>
       <div id="countdown_pane"></div>
       <input type="text" id="caption" maxlength="40" class="hide" placeholder="Caption your photo? (40 characters)">
-      <input type="text" id="email" class="hide" placeholder="Your email address...">
+      <input type="email" id="email" class="hide" placeholder="Your email address...">
 
       <a href="#" id="take_photo" class="button large">Take Photo</a><br />
       <a href="#" id="save_photo" class="button hide">Send</a>
@@ -79,7 +87,9 @@
   <script src="{{url_for('static', filename='js/jquery.pietimer.js')}}"></script>
   <script src="{{url_for('static', filename='js/foundation.min.js')}}"></script>
   <script>
-
+	document.body.addEventListener('touchmove', function(event) {
+		event.preventDefault();
+    }, false);
 
 
 $(function() {
@@ -117,12 +127,17 @@ $(function() {
       $('#photo_pane').fadeOut();
       $('#retake_photo').fadeOut();
       $('#save_photo').fadeOut();
+      $('#back_button').fadeOut();
       $('#caption').fadeOut();
       $('#email').fadeOut();
       $('#timer').pietimer('reset');
       setTimeout(countdown, 450);
       
     });
+
+	$("#back_button").click(function() {
+		document.location.href = '/';
+	});
 
     function countdown() {
       $("#timer").show();
@@ -150,6 +165,7 @@ $(function() {
       $('#photo_pane').fadeIn();
       $('#retake_photo').fadeIn();
       $('#save_photo').fadeIn();
+      $('#back_button').fadeIn();
       $('#caption').fadeIn();
       $('#email').fadeIn();
     }
