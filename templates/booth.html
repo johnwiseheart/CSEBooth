@@ -178,18 +178,22 @@ $(function() {
         caption: $('#caption').val(), 
         email: $('#email').val()
       }).done(function( data ) {
+        if ($('#email').val()) { 
+            alert("Thanks for taking a photo. We will send it to you via email!")
+        }
+        /*
         $('#retake_photo').fadeOut();
         $('#save_photo').fadeOut();
         $('#caption').fadeOut();
         $('#caption').val("");
         $('#email').fadeOut();
         $('#email').val("");
-        if ($('#email').val()) { 
-            alert("Thanks for taking a photo. We will send it to you via email!")
-        }
+        
         $('#photo_pane').html("It's time to take a photo!");
         $('#take_photo').delay(1000).fadeIn();
         $('#photo_booth_header').fadeIn();
+        */
+        document.location.href = '/';
       });
     });
 
