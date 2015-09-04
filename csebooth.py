@@ -71,8 +71,9 @@ def take_photo():
             "name": "%s.jpg" % timestamp
         })
     else:
+        print('uh oh:', output, err)
         if not os.path.isfile('capt0000.jpg'):
-            err = ' *** Capture not found; perhaps you were out of focus? *** '
+            err = ' *** Photo taking failed; perhaps you were out of focus? *** '
         return jsonify({
             "success": False,
             "error": str(err).split('***')[1]
